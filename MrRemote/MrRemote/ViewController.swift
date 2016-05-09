@@ -9,9 +9,10 @@
 
 import UIKit
 import AVFoundation
+import AVFoundation.AVAudioSession
 import MediaPlayer
 
-class ViewController: UIViewController, AVAudioPlayerDelegate {
+class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegate {
     
     var testPlayer: AVAudioPlayer? = nil
     
@@ -26,6 +27,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
     var minVolume: CGFloat = 0.00001
     var initialVolume: CGFloat = 0.0
     
+    
+    
     func loadSound(filename: NSString) -> AVAudioPlayer? {
         let url = NSBundle.mainBundle().URLForResource(filename as String, withExtension: "caf")
         if let player = try? AVAudioPlayer(contentsOfURL: url!) {
@@ -37,6 +40,14 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // make my silent audio ambient; this lets audio from other apps continue in background.
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
+        } catch {
+            print("set avaudiosessioncategory failed")
+        }
+        
         
         self.testPlayer = self.loadSound("silence")
         self.testPlayer?.numberOfLoops = -1
@@ -52,6 +63,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
 
         self.textView = UITextView(frame: UIScreen.mainScreen().bounds)
         self.textView?.editable = true
+        self.textView?.delegate = self
         self.view.addSubview(self.textView!)
         
     }
@@ -60,11 +72,17 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
         return true
     }
     
+    override func viewWillAppear(animated: Bool) {
+        
+    }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         self.becomeFirstResponder()
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+        
         self.textView?.becomeFirstResponder()
+        
     }
     
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
@@ -109,9 +127,45 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
         }
         
     }
+    
+    // MARK: ---
+
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
+    
+    // MARK: --- textviewdelegate
+    /*
+    func textViewShouldBeginEditing(textView: UITextView) -> Bool {
+        return true
+    }
+    
+    func textViewDidBeginEditing(textView: UITextView) {
+        print("did begin editing")
+    }
+    
+    func textViewShouldEndEditing(textView: UITextView) -> Bool {
+        return true
+    }
+    
+    func textViewDidEndEditing(textView: UITextView) {
+        print("did end editing")
+    }
+    */
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        return true
+    }
+    
+    func textViewDidChange(textView: UITextView) {
+        print("did change")
+        
+        // TBD
+        // if we inserted text mid string
+        // else (we inserted text at end of string)
+        
+        
+    }
+    
     
 }
 
