@@ -15,6 +15,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
     
     var testPlayer: AVAudioPlayer? = nil
     
+    var textView: UITextView? = nil
+    
     // not sure i need this
     var session: AVAudioSession? = nil
     var volumeView: MPVolumeView? = nil
@@ -45,10 +47,12 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
         self.volumeView = MPVolumeView(frame: CGRectMake(-1000,-1000,0,0) )
         UIApplication.sharedApplication().windows.first?.addSubview(self.volumeView!)
         
-        
-        
         self.session = AVAudioSession.sharedInstance()
         self.initialVolume = CGFloat(self.session!.outputVolume)
+
+        self.textView = UITextView(frame: UIScreen.mainScreen().bounds)
+        self.textView?.editable = true
+        self.view.addSubview(self.textView!)
         
     }
     
@@ -60,6 +64,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
         super.viewDidAppear(animated)
         self.becomeFirstResponder()
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+        self.textView?.becomeFirstResponder()
     }
     
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
@@ -103,6 +108,9 @@ class ViewController: UIViewController, AVAudioPlayerDelegate {
             
         }
         
+    }
+    override func prefersStatusBarHidden() -> Bool {
+        return true
     }
     
 }
