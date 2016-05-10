@@ -134,8 +134,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
                 if ( delta > 0 ) {
                     print("down")
                     self.textIndex += 1
-                    if (self.textIndex > self.words.count-1){
-                        self.textIndex = self.words.count-1
+                    if (self.textIndex > self.words.count){
+                        self.textIndex = self.words.count
                     }
                     self.selectWordAtIndex(self.textIndex)
 
@@ -190,7 +190,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         self.words = (self.textView?.text.componentsSeparatedByString(" "))!
         print(words)
         
-        self.textIndex = words.count-1
+        self.textIndex = words.count
         
     }
     
@@ -208,9 +208,18 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             return
         }
         
-        let curLen = self.words[index].characters.count
+        if (index == words.count-1){
+            self.selectAll()
+            return
+        }
+        
+        var ind = index
+        if ( index == words.count){
+            ind = words.count-1
+        }
+        let curLen = self.words[ind].characters.count
         var startInd = 0
-        for i in 0 ..< index {
+        for i in 0 ..< ind {
             let word = self.words[i]
             startInd += word.characters.count + 1 // + 1 to account for space
         }
