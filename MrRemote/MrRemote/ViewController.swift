@@ -79,6 +79,10 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         self.textView?.delegate = self
         self.view.addSubview(self.textView!)
         
+        textView!.font = UIFont(name: "Helvetica", size: 24)
+        textView!.contentInset = UIEdgeInsetsMake(0,0,0,0);
+
+        
     }
     
     override func canBecomeFirstResponder() -> Bool {
