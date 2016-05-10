@@ -1,0 +1,6 @@
+platform :ios, '9.2'
+use_frameworks!
+
+target 'MrRemote' do
+  pod 'SpeechKit'
+end
