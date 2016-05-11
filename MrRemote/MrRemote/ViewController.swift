@@ -251,21 +251,52 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.beginningOfDocument)!, toPosition: (textView?.endOfDocument)!)
     }
     
+    func selectNadaAtLast(){
+        textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.endOfDocument)!, toPosition: (textView?.endOfDocument)!)
+    }
+    
+    func selectRange(range:UITextRange){
+        textView?.selectedTextRange = range
+    }
+    
+    func delayedSelection(range:UITextRange){
+        self.selectNadaAtLast()
+        /*
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.025 * 1000000000)), dispatch_get_main_queue(), { () -> Void in
+            self.selectNadaAtLast()
+        })
+         */
+
+        let delayMultiplier = 0.001
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delayMultiplier * 1000000000)), dispatch_get_main_queue(), { () -> Void in
+            self.selectRange(range)
+        })
+        
+    }
+    
     func selectWordAtIndex(index:Int){
         
         if (words.count == 0){
             return
         }
         
+        textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.endOfDocument)!, toPosition: (textView?.endOfDocument)!)
+        
         if (index < 0){
             let pos0 = textView?.beginningOfDocument
             let pos1 = pos0
-            textView?.selectedTextRange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
+            //textView?.selectedTextRange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
+            let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
+            self.delayedSelection(r)
             return
         }
         
         if (index == words.count-1){
-            self.selectAll()
+            
+            self.selectNadaAtLast()
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * 1000000000)), dispatch_get_main_queue(), { () -> Void in
+                self.selectAll()
+            })
             return
         }
         
@@ -282,16 +313,19 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         let endInd = startInd + curLen
         let pos0 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: startInd)
         let pos1 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: endInd)
-        textView?.selectedTextRange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
+        //textView?.selectedTextRange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
+        let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
+        self.delayedSelection(r)
+        
     }
     
     func insertText(message:String) {
         //print("inserting text: ")
         //print(message)
-        var selectedRange: NSRange = (self.textView?.selectedRange)!
+        let selectedRange: NSRange = (self.textView?.selectedRange)!
         print(selectedRange)
         
-        var text = textView?.text
+        let text = textView?.text
         
         let leftRange = text!.startIndex.advancedBy(0)..<(text?.startIndex.advancedBy(selectedRange.location))!
         let leftString = text!.substringWithRange(leftRange)
@@ -376,6 +410,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
      volumeLevelProgressView!.setProgress(Float(0), animated: true)
      }
      */
+    
+    
     // MARK: - ASR Actions
     func toggleRecognition() {
         switch state {
