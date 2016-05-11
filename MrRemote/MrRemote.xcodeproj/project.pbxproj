@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9318393B1CE2741800942E0C /* SKSConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9318393A1CE2741800942E0C /* SKSConfiguration.swift */; };
+		931839401CE2998500942E0C /* sk_error.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9318393D1CE2998500942E0C /* sk_error.pcm */; };
+		931839411CE2998500942E0C /* sk_start.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9318393E1CE2998500942E0C /* sk_start.pcm */; };
+		931839421CE2998500942E0C /* sk_stop.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9318393F1CE2998500942E0C /* sk_stop.pcm */; };
 		93AE82E31CB83522002822F8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AE82E21CB83522002822F8 /* AppDelegate.swift */; };
 		93AE82E51CB83522002822F8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AE82E41CB83522002822F8 /* ViewController.swift */; };
 		93AE82E81CB83522002822F8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93AE82E61CB83522002822F8 /* Main.storyboard */; };
@@ -19,6 +23,10 @@
 /* Begin PBXFileReference section */
 		29D885C49FD3DC357EFA39F4 /* Pods-MrRemote.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MrRemote.release.xcconfig"; path = "Pods/Target Support Files/Pods-MrRemote/Pods-MrRemote.release.xcconfig"; sourceTree = "<group>"; };
 		41F957E01AD3BD0FC3B11F90 /* Pods_MrRemote.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MrRemote.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9318393A1CE2741800942E0C /* SKSConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKSConfiguration.swift; sourceTree = "<group>"; };
+		9318393D1CE2998500942E0C /* sk_error.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_error.pcm; sourceTree = "<group>"; };
+		9318393E1CE2998500942E0C /* sk_start.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_start.pcm; sourceTree = "<group>"; };
+		9318393F1CE2998500942E0C /* sk_stop.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_stop.pcm; sourceTree = "<group>"; };
 		93AE82DF1CB83522002822F8 /* MrRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AE82E21CB83522002822F8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		93AE82E41CB83522002822F8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -73,8 +81,12 @@
 			isa = PBXGroup;
 			children = (
 				93AE82F41CB83602002822F8 /* silence.caf */,
+				9318393D1CE2998500942E0C /* sk_error.pcm */,
+				9318393E1CE2998500942E0C /* sk_start.pcm */,
+				9318393F1CE2998500942E0C /* sk_stop.pcm */,
 				93AE82E21CB83522002822F8 /* AppDelegate.swift */,
 				93AE82E41CB83522002822F8 /* ViewController.swift */,
+				9318393A1CE2741800942E0C /* SKSConfiguration.swift */,
 				93AE82E61CB83522002822F8 /* Main.storyboard */,
 				93AE82E91CB83522002822F8 /* Assets.xcassets */,
 				93AE82EB1CB83522002822F8 /* LaunchScreen.storyboard */,
@@ -155,6 +167,9 @@
 			files = (
 				93AE82ED1CB83522002822F8 /* LaunchScreen.storyboard in Resources */,
 				93AE82EA1CB83522002822F8 /* Assets.xcassets in Resources */,
+				931839421CE2998500942E0C /* sk_stop.pcm in Resources */,
+				931839401CE2998500942E0C /* sk_error.pcm in Resources */,
+				931839411CE2998500942E0C /* sk_start.pcm in Resources */,
 				93AE82F51CB83602002822F8 /* silence.caf in Resources */,
 				93AE82E81CB83522002822F8 /* Main.storyboard in Resources */,
 			);
@@ -215,6 +230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9318393B1CE2741800942E0C /* SKSConfiguration.swift in Sources */,
 				93AE82E51CB83522002822F8 /* ViewController.swift in Sources */,
 				93AE82E31CB83522002822F8 /* AppDelegate.swift in Sources */,
 			);
@@ -337,7 +353,11 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = MrRemote/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-l\"c++\"",
+					"$(inherited)",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = co.davidlu.MrRemote;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -355,7 +375,11 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = MrRemote/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-l\"c++\"",
+					"$(inherited)",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = co.davidlu.MrRemote;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
