@@ -27,7 +27,7 @@
 		9318393D1CE2998500942E0C /* sk_error.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_error.pcm; sourceTree = "<group>"; };
 		9318393E1CE2998500942E0C /* sk_start.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_start.pcm; sourceTree = "<group>"; };
 		9318393F1CE2998500942E0C /* sk_stop.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_stop.pcm; sourceTree = "<group>"; };
-		93AE82DF1CB83522002822F8 /* MrRemote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MrRemote.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		93AE82DF1CB83522002822F8 /* Note To Self.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Note To Self.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AE82E21CB83522002822F8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		93AE82E41CB83522002822F8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		93AE82E71CB83522002822F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -72,7 +72,7 @@
 		93AE82E01CB83522002822F8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				93AE82DF1CB83522002822F8 /* MrRemote.app */,
+				93AE82DF1CB83522002822F8 /* Note To Self.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -106,9 +106,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		93AE82DE1CB83522002822F8 /* MrRemote */ = {
+		93AE82DE1CB83522002822F8 /* Note To Self */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 93AE82F11CB83522002822F8 /* Build configuration list for PBXNativeTarget "MrRemote" */;
+			buildConfigurationList = 93AE82F11CB83522002822F8 /* Build configuration list for PBXNativeTarget "Note To Self" */;
 			buildPhases = (
 				F22055897DBFEC8AD072EBF2 /* 📦 Check Pods Manifest.lock */,
 				93AE82DB1CB83522002822F8 /* Sources */,
@@ -121,9 +121,9 @@
 			);
 			dependencies = (
 			);
-			name = MrRemote;
+			name = "Note To Self";
 			productName = MrRemote;
-			productReference = 93AE82DF1CB83522002822F8 /* MrRemote.app */;
+			productReference = 93AE82DF1CB83522002822F8 /* Note To Self.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -142,7 +142,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 93AE82DA1CB83522002822F8 /* Build configuration list for PBXProject "MrRemote" */;
+			buildConfigurationList = 93AE82DA1CB83522002822F8 /* Build configuration list for PBXProject "Note To Self" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -155,7 +155,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				93AE82DE1CB83522002822F8 /* MrRemote */,
+				93AE82DE1CB83522002822F8 /* Note To Self */,
 			);
 		};
 /* End PBXProject section */
@@ -359,7 +359,7 @@
 					"$(inherited)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = co.davidlu.MrRemote;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Note To Self";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -381,7 +381,7 @@
 					"$(inherited)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = co.davidlu.MrRemote;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Note To Self";
 				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
@@ -389,7 +389,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		93AE82DA1CB83522002822F8 /* Build configuration list for PBXProject "MrRemote" */ = {
+		93AE82DA1CB83522002822F8 /* Build configuration list for PBXProject "Note To Self" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				93AE82EF1CB83522002822F8 /* Debug */,
@@ -398,7 +398,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		93AE82F11CB83522002822F8 /* Build configuration list for PBXNativeTarget "MrRemote" */ = {
+		93AE82F11CB83522002822F8 /* Build configuration list for PBXNativeTarget "Note To Self" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				93AE82F21CB83522002822F8 /* Debug */,

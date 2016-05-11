@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:MrRemote.xcodeproj">
+      location = "group:/Users/davlu/github/RemRem/MrRemote/Note To Self.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
