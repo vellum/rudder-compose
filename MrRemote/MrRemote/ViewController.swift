@@ -308,6 +308,10 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         }
         totes = totes.stringByAppendingString(" ")
         totes = totes.stringByReplacingOccurrencesOfString("  ", withString: " ")
+        totes = totes.stringByReplacingOccurrencesOfString(" . ", withString: ". ")
+        totes = totes.stringByReplacingOccurrencesOfString(" , ", withString: ", ")
+        totes = totes.stringByReplacingOccurrencesOfString(" ! ", withString: "! ")
+        totes = totes.stringByReplacingOccurrencesOfString(" ; ", withString: "; ")
         
         
         self.textView!.text = totes
