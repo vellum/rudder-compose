@@ -93,8 +93,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         self.toggleRecogButton = UIButton(frame:
             CGRectMake(
                 mainbounds.origin.x,
-                //mainbounds.origin.y + mainbounds.size.height - 60.0,
-                mainbounds.origin.y + mainbounds.size.height/2 - 60.0,
+                mainbounds.origin.y + mainbounds.size.height - 60.0,
+                //mainbounds.origin.y + mainbounds.size.height/2 - 60.0,
                 mainbounds.size.width,
                 60.0
             ))
@@ -117,19 +117,23 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             return
         }
         loadEarcons()
-        
-        
     }
     
     override func canBecomeFirstResponder() -> Bool {
         return true
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.keyboardWillShow), name: UIKeyboardWillShowNotification, object: nil)
+
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         self.becomeFirstResponder()
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
-        // don't launch the keyboard unless a touch is acquired
+        
+        // launch keyboard
         self.textView?.becomeFirstResponder()
     }
     
@@ -139,6 +143,19 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
 
     override func prefersStatusBarHidden() -> Bool {
         return true
+    }
+    
+    func keyboardWillShow(notification:NSNotification) {
+        let userInfo:NSDictionary = notification.userInfo!
+        let keyboardFrame:NSValue = userInfo.valueForKey(UIKeyboardFrameEndUserInfoKey) as! NSValue
+        let keyboardRectangle = keyboardFrame.CGRectValue()
+        let keyboardHeight = keyboardRectangle.height
+        print(keyboardHeight)
+        let mainbounds = UIScreen.mainScreen().bounds
+        self.textView?.frame = CGRectMake(mainbounds.origin.x, mainbounds.origin.y, mainbounds.size.width, mainbounds.size.height - keyboardHeight-60)
+        self.toggleRecogButton?.frame = CGRectMake(mainbounds.origin.x, mainbounds.size.height - keyboardHeight - 60, mainbounds.size.width, 60)
+        
+        
     }
 
     // MARK:
@@ -167,6 +184,9 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
         let rc = event!.subtype
         print("rc.rawValue: \(rc.rawValue)")
+        if (rc.rawValue == 103){
+            self.toggleRecognition()
+        }
     }
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
@@ -270,8 +290,27 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         //print(message)
         var selectedRange: NSRange = (self.textView?.selectedRange)!
         print(selectedRange)
-        self.textView!.text = self.textView?.text.stringByAppendingString(" ")
-        self.textView!.text = self.textView?.text.stringByAppendingString(message)
+        
+        var text = textView?.text
+        
+        let leftRange = text!.startIndex.advancedBy(0)..<(text?.startIndex.advancedBy(selectedRange.location))!
+        let leftString = text!.substringWithRange(leftRange)
+        
+        var totes = ""
+        totes = totes.stringByAppendingString(leftString)
+        totes = totes.stringByAppendingString(message)
+
+        if (selectedRange.location + selectedRange.length < text?.characters.count){
+            let rightRange = text!.startIndex.advancedBy(selectedRange.location + selectedRange.length)..<(text!.startIndex.advancedBy((text?.characters.count)!-1))
+            let rightString = text!.substringWithRange(rightRange)
+            
+            totes = totes.stringByAppendingString(rightString)
+        }
+        totes = totes.stringByAppendingString(" ")
+        totes = totes.stringByReplacingOccurrencesOfString("  ", withString: " ")
+        
+        
+        self.textView!.text = totes
         
         
         //self.becomeFirstResponder()
@@ -297,8 +336,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     func resetTransaction() {
         NSOperationQueue.mainQueue().addOperationWithBlock({
             self.skTransaction = nil
-            //self.toggleRecogButton?.setTitle("recognizeWithType", forState: .Normal)
-            //self.toggleRecogButton?.enabled = true
+            self.toggleRecogButton?.setTitle("Dictate", forState: .Normal)
+            self.toggleRecogButton?.enabled = true
         })
     }
     
