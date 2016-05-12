@@ -254,23 +254,32 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     func selectNadaAtLast(){
         textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.endOfDocument)!, toPosition: (textView?.endOfDocument)!)
     }
+    func selectNadaAtFirst(){
+        textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.beginningOfDocument)!, toPosition: (textView?.beginningOfDocument)!)
+    }
     
     func selectRange(range:UITextRange){
         textView?.selectedTextRange = range
     }
     
     func delayedSelection(range:UITextRange){
-        self.selectNadaAtLast()
-        /*
+        //self.selectNadaAtFirst()
+        //self.selectRange(range)
+        
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.025 * 1000000000)), dispatch_get_main_queue(), { () -> Void in
-            self.selectNadaAtLast()
+            self.selectNadaAtFirst()
         })
-         */
-
-        let delayMultiplier = 0.001
+        
+        var delayMultiplier = 0.026
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delayMultiplier * 1000000000)), dispatch_get_main_queue(), { () -> Void in
             self.selectRange(range)
         })
+        
+        delayMultiplier = 0.05
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delayMultiplier * 1000000000)), dispatch_get_main_queue(), { () -> Void in
+            self.selectRange(range)
+        })
+self.selectRange(range)
         
     }
     
@@ -322,9 +331,16 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     func insertText(message:String) {
         //print("inserting text: ")
         //print(message)
+        
         let selectedRange: NSRange = (self.textView?.selectedRange)!
         print(selectedRange)
         
+        var msg = message
+        msg = msg.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        if (msg.lowercaseString == "delete" && selectedRange.length>0){
+            msg = ""
+        }
+
         let text = textView?.text
         
         let leftRange = text!.startIndex.advancedBy(0)..<(text?.startIndex.advancedBy(selectedRange.location))!
@@ -332,7 +348,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         
         var totes = ""
         totes = totes.stringByAppendingString(leftString)
-        totes = totes.stringByAppendingString(message)
+        totes = totes.stringByAppendingString(msg)
 
         if (selectedRange.location + selectedRange.length < text?.characters.count){
             let rightRange = text!.startIndex.advancedBy(selectedRange.location + selectedRange.length)..<(text!.startIndex.advancedBy((text?.characters.count)!-1))

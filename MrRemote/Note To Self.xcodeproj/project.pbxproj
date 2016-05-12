@@ -140,6 +140,11 @@
 					93AE82DE1CB83522002822F8 = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = ARA52RY8JW;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
