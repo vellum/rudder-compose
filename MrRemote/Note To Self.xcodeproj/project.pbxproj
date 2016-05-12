@@ -62,7 +62,7 @@
 		93AE82D61CB83522002822F8 = {
 			isa = PBXGroup;
 			children = (
-				93AE82E11CB83522002822F8 /* MrRemote */,
+				93AE82E11CB83522002822F8 /* Source */,
 				93AE82E01CB83522002822F8 /* Products */,
 				33868526954BCED889A45182 /* Pods */,
 				B828C0D955422DEACE789CD5 /* Frameworks */,
@@ -77,7 +77,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		93AE82E11CB83522002822F8 /* MrRemote */ = {
+		93AE82E11CB83522002822F8 /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				93AE82F41CB83602002822F8 /* silence.caf */,
@@ -92,6 +92,7 @@
 				93AE82EB1CB83522002822F8 /* LaunchScreen.storyboard */,
 				93AE82EE1CB83522002822F8 /* Info.plist */,
 			);
+			name = Source;
 			path = MrRemote;
 			sourceTree = "<group>";
 		};
