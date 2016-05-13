@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30EBCA0208E2E046B26DC583 /* Pods_Note_To_Self.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F78D64AE61DB8980FCB49E06 /* Pods_Note_To_Self.framework */; };
 		9318393B1CE2741800942E0C /* SKSConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9318393A1CE2741800942E0C /* SKSConfiguration.swift */; };
 		931839401CE2998500942E0C /* sk_error.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9318393D1CE2998500942E0C /* sk_error.pcm */; };
 		931839411CE2998500942E0C /* sk_start.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9318393E1CE2998500942E0C /* sk_start.pcm */; };
@@ -17,12 +18,10 @@
 		93AE82EA1CB83522002822F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93AE82E91CB83522002822F8 /* Assets.xcassets */; };
 		93AE82ED1CB83522002822F8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93AE82EB1CB83522002822F8 /* LaunchScreen.storyboard */; };
 		93AE82F51CB83602002822F8 /* silence.caf in Resources */ = {isa = PBXBuildFile; fileRef = 93AE82F41CB83602002822F8 /* silence.caf */; };
-		C3EA95D17584B312B775F8CB /* Pods_MrRemote.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41F957E01AD3BD0FC3B11F90 /* Pods_MrRemote.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		29D885C49FD3DC357EFA39F4 /* Pods-MrRemote.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MrRemote.release.xcconfig"; path = "Pods/Target Support Files/Pods-MrRemote/Pods-MrRemote.release.xcconfig"; sourceTree = "<group>"; };
-		41F957E01AD3BD0FC3B11F90 /* Pods_MrRemote.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MrRemote.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		829CA79B5507125B5A82ED8D /* Pods-Note To Self.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Note To Self.release.xcconfig"; path = "Pods/Target Support Files/Pods-Note To Self/Pods-Note To Self.release.xcconfig"; sourceTree = "<group>"; };
 		9318393A1CE2741800942E0C /* SKSConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKSConfiguration.swift; sourceTree = "<group>"; };
 		9318393D1CE2998500942E0C /* sk_error.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_error.pcm; sourceTree = "<group>"; };
 		9318393E1CE2998500942E0C /* sk_start.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_start.pcm; sourceTree = "<group>"; };
@@ -35,7 +34,8 @@
 		93AE82EC1CB83522002822F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		93AE82EE1CB83522002822F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		93AE82F41CB83602002822F8 /* silence.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = silence.caf; sourceTree = "<group>"; };
-		EF7BF132AA54F4FABC0D1FC8 /* Pods-MrRemote.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MrRemote.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MrRemote/Pods-MrRemote.debug.xcconfig"; sourceTree = "<group>"; };
+		9BBC19010E3C4DEF931285FE /* Pods-Note To Self.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Note To Self.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Note To Self/Pods-Note To Self.debug.xcconfig"; sourceTree = "<group>"; };
+		F78D64AE61DB8980FCB49E06 /* Pods_Note_To_Self.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Note_To_Self.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,7 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3EA95D17584B312B775F8CB /* Pods_MrRemote.framework in Frameworks */,
+				30EBCA0208E2E046B26DC583 /* Pods_Note_To_Self.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,8 +53,8 @@
 		33868526954BCED889A45182 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				EF7BF132AA54F4FABC0D1FC8 /* Pods-MrRemote.debug.xcconfig */,
-				29D885C49FD3DC357EFA39F4 /* Pods-MrRemote.release.xcconfig */,
+				9BBC19010E3C4DEF931285FE /* Pods-Note To Self.debug.xcconfig */,
+				829CA79B5507125B5A82ED8D /* Pods-Note To Self.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -93,13 +93,13 @@
 				93AE82EE1CB83522002822F8 /* Info.plist */,
 			);
 			name = Source;
-			path = MrRemote;
+			path = "Note To Self";
 			sourceTree = "<group>";
 		};
 		B828C0D955422DEACE789CD5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				41F957E01AD3BD0FC3B11F90 /* Pods_MrRemote.framework */,
+				F78D64AE61DB8980FCB49E06 /* Pods_Note_To_Self.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -196,7 +196,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MrRemote/Pods-MrRemote-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Note To Self/Pods-Note To Self-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A03FEEB2E28AE634A1F1A95F /* 📦 Copy Pods Resources */ = {
@@ -211,7 +211,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MrRemote/Pods-MrRemote-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Note To Self/Pods-Note To Self-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F22055897DBFEC8AD072EBF2 /* 📦 Check Pods Manifest.lock */ = {
@@ -351,13 +351,13 @@
 		};
 		93AE82F21CB83522002822F8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EF7BF132AA54F4FABC0D1FC8 /* Pods-MrRemote.debug.xcconfig */;
+			baseConfigurationReference = 9BBC19010E3C4DEF931285FE /* Pods-Note To Self.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = MrRemote/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Note To Self/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
@@ -373,13 +373,13 @@
 		};
 		93AE82F31CB83522002822F8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 29D885C49FD3DC357EFA39F4 /* Pods-MrRemote.release.xcconfig */;
+			baseConfigurationReference = 829CA79B5507125B5A82ED8D /* Pods-Note To Self.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = MrRemote/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Note To Self/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (

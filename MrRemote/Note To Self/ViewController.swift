@@ -81,7 +81,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
 
         // set up a text view
         self.textView = UITextView(frame: UIScreen.mainScreen().bounds)
-        self.textView?.editable = true
+        self.textView?.editable = false//true
         self.textView?.delegate = self
         self.view.addSubview(self.textView!)
         textView!.font = UIFont(name: "Helvetica", size: 24)

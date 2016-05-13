@@ -13,9 +13,7 @@ var SKSAppKey = "65ffe6c6045a21228c7d0b123c57a6b7b378dead913a3d074ff0a26f7df18de
 var SKSAppId = "NMDPTRIAL_vellumdavid_gmail_com20160509010149"
 var SKSServerHost = "sslsandbox.nmdp.nuancemobility.net"
 var SKSServerPort = "443"
-
 var SKSLanguage = "!LANGUAGE!"
-
 var SKSServerUrl = String(format: "nmsps://%@@%@:%@", SKSAppId, SKSServerHost, SKSServerPort)
 
 // Only needed if using NLU/Bolt
