@@ -49,6 +49,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     var state = SKSState.SKSIdle
     var toggleRecogButton:UIButton?
 
+    var tts:TTS2?
     // MARK:
     // MARK: boilerplate
     
@@ -142,6 +143,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             return
         }
         loadEarcons()
+        
+        tts=TTS2()
     }
     
     override func canBecomeFirstResponder() -> Bool {
@@ -283,6 +286,11 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     
     func selectAll(){
         textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.beginningOfDocument)!, toPosition: (textView?.endOfDocument)!)
+        
+        var message = textView!.text!
+        message = message.stringByAppendingString("... selected")
+        
+        tts?.speak(message)
     }
     
     func selectNadaAtLast(){
@@ -299,6 +307,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     func delayedSelection(range:UITextRange){
         //self.selectNadaAtFirst()
         self.selectRange(range)
+        
         /*
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.025 * 1000000000)), dispatch_get_main_queue(), { () -> Void in
             self.selectNadaAtFirst()
@@ -332,6 +341,10 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             //textView?.selectedTextRange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
             let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
             self.delayedSelection(r)
+            
+            let word = "insertion point at beginning of document"
+            tts?.speak(word)
+
             return
         }
         
@@ -341,6 +354,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * 1000000000)), dispatch_get_main_queue(), { () -> Void in
                 self.selectAll()
             })
+            
             return
         }
         
@@ -362,8 +376,19 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         self.selectRange(r)
         //self.delayedSelection(r)
         
+        
+        if (ind == words.count-1){
+            let word = "insertion point at end of document"
+            tts?.speak(word)
+
+        } else {
+            var word = self.words[ind]
+            word = word.stringByAppendingString("... selected")
+            tts?.speak(word)
+            
+        }
     }
-    
+
     func insertText(message:String) {
         //print("inserting text: ")
         //print(message)
@@ -413,6 +438,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         */
         
         self.textViewDidChange(self.textView!)
+        tts?.speak(message)
     }
 
     // MARK:
@@ -549,6 +575,10 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         state = .SKSIdle
         resetTransaction()
     }
+    func transaction(transaction: SKTransaction!, didReceiveAudio audio: SKAudio!) {
+        self.skSession!.audioPlayer.playAudio(audio)
+    }
+
     
 }
 

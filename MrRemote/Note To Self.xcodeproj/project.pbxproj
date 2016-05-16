@@ -12,6 +12,8 @@
 		931839401CE2998500942E0C /* sk_error.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9318393D1CE2998500942E0C /* sk_error.pcm */; };
 		931839411CE2998500942E0C /* sk_start.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9318393E1CE2998500942E0C /* sk_start.pcm */; };
 		931839421CE2998500942E0C /* sk_stop.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 9318393F1CE2998500942E0C /* sk_stop.pcm */; };
+		93657F0A1CE98B90006A13EF /* TTS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93657F091CE98B90006A13EF /* TTS.swift */; };
+		93657F0C1CE99DD0006A13EF /* TTS2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93657F0B1CE99DD0006A13EF /* TTS2.swift */; };
 		93AE82E31CB83522002822F8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AE82E21CB83522002822F8 /* AppDelegate.swift */; };
 		93AE82E51CB83522002822F8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AE82E41CB83522002822F8 /* ViewController.swift */; };
 		93AE82E81CB83522002822F8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93AE82E61CB83522002822F8 /* Main.storyboard */; };
@@ -26,6 +28,8 @@
 		9318393D1CE2998500942E0C /* sk_error.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_error.pcm; sourceTree = "<group>"; };
 		9318393E1CE2998500942E0C /* sk_start.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_start.pcm; sourceTree = "<group>"; };
 		9318393F1CE2998500942E0C /* sk_stop.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = sk_stop.pcm; sourceTree = "<group>"; };
+		93657F091CE98B90006A13EF /* TTS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTS.swift; sourceTree = "<group>"; };
+		93657F0B1CE99DD0006A13EF /* TTS2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TTS2.swift; sourceTree = "<group>"; };
 		93AE82DF1CB83522002822F8 /* Note To Self.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Note To Self.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AE82E21CB83522002822F8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		93AE82E41CB83522002822F8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -86,6 +90,8 @@
 				9318393F1CE2998500942E0C /* sk_stop.pcm */,
 				93AE82E21CB83522002822F8 /* AppDelegate.swift */,
 				93AE82E41CB83522002822F8 /* ViewController.swift */,
+				93657F091CE98B90006A13EF /* TTS.swift */,
+				93657F0B1CE99DD0006A13EF /* TTS2.swift */,
 				9318393A1CE2741800942E0C /* SKSConfiguration.swift */,
 				93AE82E61CB83522002822F8 /* Main.storyboard */,
 				93AE82E91CB83522002822F8 /* Assets.xcassets */,
@@ -238,7 +244,9 @@
 			files = (
 				9318393B1CE2741800942E0C /* SKSConfiguration.swift in Sources */,
 				93AE82E51CB83522002822F8 /* ViewController.swift in Sources */,
+				93657F0C1CE99DD0006A13EF /* TTS2.swift in Sources */,
 				93AE82E31CB83522002822F8 /* AppDelegate.swift in Sources */,
+				93657F0A1CE98B90006A13EF /* TTS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
