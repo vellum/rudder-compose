@@ -20,6 +20,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     
     var testPlayer: AVAudioPlayer? = nil
     var textView: UITextView? = nil
+    var clearField: UIView? = nil
     var session: AVAudioSession? = nil
     var volumeView: MPVolumeView? = nil
     var maxVolume: CGFloat = 0.99999
@@ -81,12 +82,34 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
 
         // set up a text view
         self.textView = UITextView(frame: UIScreen.mainScreen().bounds)
-        self.textView?.editable = false//true
         self.textView?.delegate = self
         self.view.addSubview(self.textView!)
         textView!.font = UIFont(name: "Helvetica", size: 24)
         textView!.contentInset = UIEdgeInsetsMake(0,0,0,0);
         // FIXME: style this text it's awful
+        
+        self.clearField = UIView(frame: self.textView!.frame)
+        clearField?.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.5)
+        
+        
+        self.textView?.editable = true
+        self.textView?.userInteractionEnabled = true
+        
+        let lgr =  UISwipeGestureRecognizer(target: self, action: #selector(self.selectPrev))
+        let rgr = UISwipeGestureRecognizer(target: self, action: #selector(self.selectNext))
+        lgr.direction = .Left
+        rgr.direction = .Right
+        self.textView?.addGestureRecognizer(lgr)
+        self.textView?.addGestureRecognizer(rgr)
+        /*
+        self.textView?.editable = false
+        self.textView?.userInteractionEnabled = false
+        
+        clearField?.addGestureRecognizer(lgr)
+        clearField?.addGestureRecognizer(rgr)
+        view.addSubview(clearField!)
+        */
+        
 
         // speechkit
         let mainbounds = UIScreen.mainScreen().bounds
@@ -197,18 +220,10 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
                 MPMusicPlayerController.applicationMusicPlayer().setValue(num, forKeyPath: "volume")
                 if ( delta > 0 ) {
                     print("down")
-                    self.textIndex += 1
-                    if (self.textIndex > self.words.count){
-                        self.textIndex = self.words.count
-                    }
-                    self.selectWordAtIndex(self.textIndex)
+                    selectNext()
                 } else if ( delta < 0 ) {
                     print("up")
-                    self.textIndex -= 1
-                    if (self.textIndex < -1){
-                        self.textIndex = -1
-                    }
-                    self.selectWordAtIndex(self.textIndex)
+                    selectPrev()
                 }
             }
             // reset volume level?
@@ -247,6 +262,22 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     // MARK:
     // MARK: text selection by volume rocker
     
+    func selectPrev(){
+        self.textIndex -= 1
+        if (self.textIndex < -1){
+            self.textIndex = -1
+        }
+        self.selectWordAtIndex(self.textIndex)
+    }
+    
+    func selectNext(){
+        self.textIndex += 1
+        if (self.textIndex > self.words.count){
+            self.textIndex = self.words.count
+        }
+        self.selectWordAtIndex(self.textIndex)
+    }
+    
     func selectAll(){
         textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.beginningOfDocument)!, toPosition: (textView?.endOfDocument)!)
     }
@@ -264,8 +295,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     
     func delayedSelection(range:UITextRange){
         //self.selectNadaAtFirst()
-        //self.selectRange(range)
-        
+        self.selectRange(range)
+        /*
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.025 * 1000000000)), dispatch_get_main_queue(), { () -> Void in
             self.selectNadaAtFirst()
         })
@@ -279,7 +310,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delayMultiplier * 1000000000)), dispatch_get_main_queue(), { () -> Void in
             self.selectRange(range)
         })
-self.selectRange(range)
+        self.selectRange(range)
+        */
         
     }
     
@@ -324,7 +356,8 @@ self.selectRange(range)
         let pos1 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: endInd)
         //textView?.selectedTextRange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
         let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
-        self.delayedSelection(r)
+        self.selectRange(r)
+        //self.delayedSelection(r)
         
     }
     
