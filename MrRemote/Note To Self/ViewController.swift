@@ -81,15 +81,15 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         self.initialVolume = CGFloat(self.session!.outputVolume)
 
         // set up a text view
-        self.textView = UITextView(frame: UIScreen.mainScreen().bounds)
+        let b = UIScreen.mainScreen().bounds
+        let m:CGFloat = 18.0
+        self.textView = UITextView(frame: CGRectMake(m, 0, b.size.width-m*2, b.size.height-60))
         self.textView?.delegate = self
         self.view.addSubview(self.textView!)
-        textView!.font = UIFont(name: "Helvetica", size: 24)
-        textView!.contentInset = UIEdgeInsetsMake(0,0,0,0);
+        textView!.font = UIFont(name: "IowanOldStyle-Roman", size: 24)
+        textView!.contentInset = UIEdgeInsetsMake(18,0,0,0);
         // FIXME: style this text it's awful
         
-        self.clearField = UIView(frame: self.textView!.frame)
-        clearField?.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.5)
         
         
         self.textView?.editable = true
@@ -105,7 +105,9 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         self.textView?.editable = false
         self.textView?.userInteractionEnabled = false
         
-        clearField?.addGestureRecognizer(lgr)
+         self.clearField = UIView(frame: self.textView!.frame)
+         clearField?.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.5)
+         clearField?.addGestureRecognizer(lgr)
         clearField?.addGestureRecognizer(rgr)
         view.addSubview(clearField!)
         */
@@ -175,7 +177,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         let keyboardHeight = keyboardRectangle.height
         print(keyboardHeight)
         let mainbounds = UIScreen.mainScreen().bounds
-        self.textView?.frame = CGRectMake(mainbounds.origin.x, mainbounds.origin.y, mainbounds.size.width, mainbounds.size.height - keyboardHeight-60)
+        let m:CGFloat = 18.0
+        self.textView?.frame = CGRectMake(mainbounds.origin.x+m, mainbounds.origin.y, mainbounds.size.width-m*2, mainbounds.size.height - keyboardHeight-60)
         self.toggleRecogButton?.frame = CGRectMake(mainbounds.origin.x, mainbounds.size.height - keyboardHeight - 60, mainbounds.size.width, 60)
         
         
