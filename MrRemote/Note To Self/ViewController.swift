@@ -293,9 +293,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         if (words.count == 0){
             return
         }
-        
         textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.endOfDocument)!, toPosition: (textView?.endOfDocument)!)
-        
         if (index < 0){
             let pos0 = textView?.beginningOfDocument
             let pos1 = pos0
@@ -305,12 +303,10 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             tts?.speak(word)
             return
         }
-        
         if (index == words.count-1){
             self.selectAll()
             return
         }
-        
         var ind = index
         if ( index == words.count){
             ind = words.count-1
@@ -324,21 +320,15 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         let endInd = startInd + curLen
         let pos0 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: startInd)
         let pos1 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: endInd)
-        //textView?.selectedTextRange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
         let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
         selectRange(r)
-        //selectRange(r)
-        
-        
         if (ind == words.count-1){
             let word = "insertion point at end of document"
             tts?.speak(word)
-
         } else {
             var word = words[ind]
             word = word.stringByAppendingString("... selected")
             tts?.speak(word)
-            
         }
     }
 
@@ -377,7 +367,6 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     // MARK: speechkit - helpers
     
     func log(message: String) {
-        //logTextView!.text = logTextView!.text.stringByAppendingFormat("%@\n", message)
         print(message)
     }
     
@@ -446,9 +435,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     func stopRecording() {
         // Stop recording the user.
         skTransaction!.stopRecording()
-        
         // Disable the button until we received notification that the transaction is completed.
-        toggleRecogButton?.enabled = false
+        //toggleRecogButton?.enabled = false
     }
     
     func cancel() {
@@ -461,7 +449,6 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     
     func transactionDidBeginRecording(transaction: SKTransaction!) {
         log("transactionDidBeginRecording")
-        
         state = .SKSListening
         //startPollingVolume()
         toggleRecogButton?.setTitle("Listening..", forState: .Normal)
@@ -469,7 +456,6 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     
     func transactionDidFinishRecording(transaction: SKTransaction!) {
         log("transactionDidFinishRecording")
-        
         state = .SKSProcessing
         //stopPollingVolume()
         toggleRecogButton?.setTitle("Processing..", forState: .Normal)
@@ -477,14 +463,10 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     
     func transaction(transaction: SKTransaction!, didReceiveRecognition recognition: SKRecognition!) {
         log(String(format: "didReceiveRecognition: %@", arguments: [recognition.text]))
-        
         state = .SKSIdle
-        
         insertText(recognition.text)
-        
         toggleRecogButton?.setTitle("Dictate", forState: .Normal)
         toggleRecogButton?.enabled = true
-
     }
     
     func transaction(transaction: SKTransaction!, didReceiveServiceResponse response: [NSObject : AnyObject]!) {
@@ -493,24 +475,21 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     
     func transaction(transaction: SKTransaction!, didFinishWithSuggestion suggestion: String) {
         log("didFinishWithSuggestion")
-        
         state = .SKSIdle
         resetTransaction()
     }
     
     func transaction(transaction: SKTransaction!, didFailWithError error: NSError!, suggestion: String) {
         log(String(format: "didFailWithError: %@. %@", arguments: [error.description, suggestion]))
-        
         // Something went wrong. Ensure that your credentials are correct.
         // The user could also be offline, so be sure to handle this case appropriately.
-        
         state = .SKSIdle
         resetTransaction()
     }
+    
     func transaction(transaction: SKTransaction!, didReceiveAudio audio: SKAudio!) {
         skSession!.audioPlayer.playAudio(audio)
     }
 
-    
 }
 
