@@ -16,6 +16,10 @@ import SpeechKit
 class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegate, SKTransactionDelegate {
 
     // MARK:
+    // MARK: DIY SELECTION
+    var shouldAllowManualEdit: Bool = true
+    
+    // MARK:
     // MARK: volume rocker
     
     var testPlayer: AVAudioPlayer? = nil
@@ -68,72 +72,52 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
          */
         
         // register to get volume input by playing an audio sample
-        self.testPlayer = self.loadSound("silence")
-        self.testPlayer?.numberOfLoops = -1
-        self.testPlayer?.play()
+        testPlayer = loadSound("silence")
+        testPlayer?.numberOfLoops = -1
+        testPlayer?.play()
         listenVolumeButton()
         
         // disable hud (this replaces the default hud with a custom 0x0 view
-        self.volumeView = MPVolumeView(frame: CGRectMake(-1000,-1000,0,0) )
-        UIApplication.sharedApplication().windows.first?.addSubview(self.volumeView!)
+        volumeView = MPVolumeView(frame: CGRectMake(-1000,-1000,0,0) )
+        UIApplication.sharedApplication().windows.first?.addSubview(volumeView!)
 
         // set initial volume (when we intercept volume change events, we'll reset the volume level)
-        self.session = AVAudioSession.sharedInstance()
-        self.initialVolume = CGFloat(self.session!.outputVolume)
+        session = AVAudioSession.sharedInstance()
+        initialVolume = CGFloat(session!.outputVolume)
 
         // set up a text view
         let b = UIScreen.mainScreen().bounds
         let m:CGFloat = 18.0
-        self.textView = UITextView(frame: CGRectMake(m, 0, b.size.width-m*2, b.size.height-60))
-        self.textView?.delegate = self
-        self.view.addSubview(self.textView!)
+        textView = UITextView(frame: CGRectMake(m, 0, b.size.width-m*2, b.size.height-60))
+        textView?.delegate = self
         textView!.font = UIFont(name: "IowanOldStyle-Roman", size: 24)
         textView!.contentInset = UIEdgeInsetsMake(18,0,0,0);
-        // FIXME: style this text it's awful
-        
-        
-        
-        self.textView?.editable = true
-        self.textView?.userInteractionEnabled = true
-        
-        let lgr =  UISwipeGestureRecognizer(target: self, action: #selector(self.selectPrev))
-        let rgr = UISwipeGestureRecognizer(target: self, action: #selector(self.selectNext))
+        textView?.editable = true
+        textView?.userInteractionEnabled = true
+        let lgr =  UISwipeGestureRecognizer(target: self, action: #selector(selectPrev))
+        let rgr = UISwipeGestureRecognizer(target: self, action: #selector(selectNext))
         lgr.direction = .Left
         rgr.direction = .Right
-        self.textView?.addGestureRecognizer(lgr)
-        self.textView?.addGestureRecognizer(rgr)
-        
-        self.textView?.accessibilityTraits = (self.textView?.accessibilityTraits)! | UIAccessibilityTraitAllowsDirectInteraction
-        
-        //self.textView?.isAccessibilityElement = false
-        
-        /*
-        self.textView?.editable = false
-        self.textView?.userInteractionEnabled = false
-        
-         self.clearField = UIView(frame: self.textView!.frame)
-         clearField?.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.5)
-         clearField?.addGestureRecognizer(lgr)
-        clearField?.addGestureRecognizer(rgr)
-        view.addSubview(clearField!)
-        */
+        textView?.addGestureRecognizer(lgr)
+        textView?.addGestureRecognizer(rgr)
+        textView?.accessibilityTraits = (textView?.accessibilityTraits)! | UIAccessibilityTraitAllowsDirectInteraction
+        //textView?.isAccessibilityElement = false
+        view.addSubview(textView!)
         
 
         // speechkit
         let mainbounds = UIScreen.mainScreen().bounds
-        self.toggleRecogButton = UIButton(frame:
+        toggleRecogButton = UIButton(frame:
             CGRectMake(
                 mainbounds.origin.x,
                 mainbounds.origin.y + mainbounds.size.height - 60.0,
-                //mainbounds.origin.y + mainbounds.size.height/2 - 60.0,
                 mainbounds.size.width,
                 60.0
             ))
-        self.toggleRecogButton?.backgroundColor = UIColor.lightGrayColor()
-        self.toggleRecogButton?.setTitle("Dictate", forState: .Normal)
-        self.view.addSubview(self.toggleRecogButton!)
-        self.toggleRecogButton?.addTarget(self, action: #selector(self.toggleRecognition), forControlEvents: .TouchUpInside)
-        
+        toggleRecogButton?.backgroundColor = UIColor.lightGrayColor()
+        toggleRecogButton?.setTitle("Dictate", forState: .Normal)
+        view.addSubview(toggleRecogButton!)
+        toggleRecogButton?.addTarget(self, action: #selector(toggleRecognition), forControlEvents: .TouchUpInside)
         recognitionType = SKTransactionSpeechTypeDictation
         endpointer = .Short
         language = LANGUAGE
@@ -157,17 +141,14 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     }
     
     override func viewWillAppear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.keyboardWillShow), name: UIKeyboardWillShowNotification, object: nil)
-
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillShow), name: UIKeyboardWillShowNotification, object: nil)
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        self.becomeFirstResponder()
+        becomeFirstResponder()
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
-        
-        // launch keyboard
-        self.textView?.becomeFirstResponder()
+        textView?.becomeFirstResponder()
     }
     
     override func didReceiveMemoryWarning() {
@@ -179,17 +160,15 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     }
     
     func keyboardWillShow(notification:NSNotification) {
+        // redo layout when keyboard is launched
         let userInfo:NSDictionary = notification.userInfo!
         let keyboardFrame:NSValue = userInfo.valueForKey(UIKeyboardFrameEndUserInfoKey) as! NSValue
         let keyboardRectangle = keyboardFrame.CGRectValue()
         let keyboardHeight = keyboardRectangle.height
-        print(keyboardHeight)
         let mainbounds = UIScreen.mainScreen().bounds
         let m:CGFloat = 18.0
-        self.textView?.frame = CGRectMake(mainbounds.origin.x+m, mainbounds.origin.y, mainbounds.size.width-m*2, mainbounds.size.height - keyboardHeight-60)
-        self.toggleRecogButton?.frame = CGRectMake(mainbounds.origin.x, mainbounds.size.height - keyboardHeight - 60, mainbounds.size.width, 60)
-        
-        
+        textView?.frame = CGRectMake(mainbounds.origin.x+m, mainbounds.origin.y, mainbounds.size.width-m*2, mainbounds.size.height - keyboardHeight-60)
+        toggleRecogButton?.frame = CGRectMake(mainbounds.origin.x, mainbounds.size.height - keyboardHeight - 60, mainbounds.size.width, 60)
     }
 
     // MARK:
@@ -206,7 +185,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
 
     func listenVolumeButton(){
         let audioSession = AVAudioSession.sharedInstance()
-        self.session = audioSession
+        session = audioSession
         do {
             try audioSession.setActive(true)
             audioSession.addObserver(self, forKeyPath: "outputVolume",
@@ -219,15 +198,15 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         let rc = event!.subtype
         print("rc.rawValue: \(rc.rawValue)")
         if (rc.rawValue == 103){
-            self.toggleRecognition()
+            toggleRecognition()
         }
     }
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "outputVolume"{
-            let delta = self.initialVolume - ( change!["new"] as! CGFloat )
+            let delta = initialVolume - ( change!["new"] as! CGFloat )
             if (delta != 0){
-                let num:NSNumber = NSNumber(float: Float(self.initialVolume))
+                let num:NSNumber = NSNumber(float: Float(initialVolume))
                 MPMusicPlayerController.applicationMusicPlayer().setValue(num, forKeyPath: "volume")
                 if ( delta > 0 ) {
                     print("down")
@@ -266,27 +245,27 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     }
     
     func textViewDidChange(textView: UITextView) {
-        self.words = (self.textView?.text.componentsSeparatedByString(" "))!
-        self.textIndex = words.count
+        words = (textView.text.componentsSeparatedByString(" "))
+        textIndex = words.count
     }
     
     // MARK:
     // MARK: text selection by volume rocker
     
     func selectPrev(){
-        self.textIndex -= 1
-        if (self.textIndex < -1){
-            self.textIndex = -1
+        textIndex -= 1
+        if (textIndex < -1){
+            textIndex = -1
         }
-        self.selectWordAtIndex(self.textIndex)
+        selectWordAtIndex(textIndex)
     }
     
     func selectNext(){
-        self.textIndex += 1
-        if (self.textIndex > self.words.count){
-            self.textIndex = self.words.count
+        textIndex += 1
+        if (textIndex > words.count){
+            textIndex = words.count
         }
-        self.selectWordAtIndex(self.textIndex)
+        selectWordAtIndex(textIndex)
     }
     
     func selectAll(){
@@ -309,29 +288,6 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         textView?.selectedTextRange = range
     }
     
-    func delayedSelection(range:UITextRange){
-        //self.selectNadaAtFirst()
-        self.selectRange(range)
-        
-        /*
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.025 * 1000000000)), dispatch_get_main_queue(), { () -> Void in
-            self.selectNadaAtFirst()
-        })
-        
-        var delayMultiplier = 0.026
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delayMultiplier * 1000000000)), dispatch_get_main_queue(), { () -> Void in
-            self.selectRange(range)
-        })
-        
-        delayMultiplier = 0.05
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delayMultiplier * 1000000000)), dispatch_get_main_queue(), { () -> Void in
-            self.selectRange(range)
-        })
-        self.selectRange(range)
-        */
-        
-    }
-    
     func selectWordAtIndex(index:Int){
         
         if (words.count == 0){
@@ -343,23 +299,15 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         if (index < 0){
             let pos0 = textView?.beginningOfDocument
             let pos1 = pos0
-            //textView?.selectedTextRange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
             let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
-            self.delayedSelection(r)
-            
+            selectRange(r)
             let word = "insertion point at beginning of document"
             tts?.speak(word)
-
             return
         }
         
         if (index == words.count-1){
-            
-            self.selectNadaAtLast()
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * 1000000000)), dispatch_get_main_queue(), { () -> Void in
-                self.selectAll()
-            })
-            
+            self.selectAll()
             return
         }
         
@@ -367,10 +315,10 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         if ( index == words.count){
             ind = words.count-1
         }
-        let curLen = self.words[ind].characters.count
+        let curLen = words[ind].characters.count
         var startInd = 0
         for i in 0 ..< ind {
-            let word = self.words[i]
+            let word = words[i]
             startInd += word.characters.count + 1 // + 1 to account for space
         }
         let endInd = startInd + curLen
@@ -378,8 +326,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         let pos1 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: endInd)
         //textView?.selectedTextRange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
         let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
-        self.selectRange(r)
-        //self.delayedSelection(r)
+        selectRange(r)
+        //selectRange(r)
         
         
         if (ind == words.count-1){
@@ -387,7 +335,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             tts?.speak(word)
 
         } else {
-            var word = self.words[ind]
+            var word = words[ind]
             word = word.stringByAppendingString("... selected")
             tts?.speak(word)
             
@@ -395,27 +343,19 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     }
 
     func insertText(message:String) {
-        //print("inserting text: ")
-        //print(message)
         
-        let selectedRange: NSRange = (self.textView?.selectedRange)!
-        print(selectedRange)
-        
+        let selectedRange: NSRange = (textView?.selectedRange)!
         var msg = message
         msg = msg.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
         if (msg.lowercaseString == "delete" && selectedRange.length>0){
             msg = ""
         }
-
         let text = textView?.text
-        
         let leftRange = text!.startIndex.advancedBy(0)..<(text?.startIndex.advancedBy(selectedRange.location))!
         let leftString = text!.substringWithRange(leftRange)
-        
         var totes = ""
         totes = totes.stringByAppendingString(leftString)
         totes = totes.stringByAppendingString(msg)
-
         if (selectedRange.location + selectedRange.length < text?.characters.count){
             let rightRange = text!.startIndex.advancedBy(selectedRange.location + selectedRange.length)..<(text!.startIndex.advancedBy((text?.characters.count)!-1))
             let rightString = text!.substringWithRange(rightRange)
@@ -428,21 +368,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         totes = totes.stringByReplacingOccurrencesOfString(" , ", withString: ", ")
         totes = totes.stringByReplacingOccurrencesOfString(" ! ", withString: "! ")
         totes = totes.stringByReplacingOccurrencesOfString(" ; ", withString: "; ")
-        
-        
-        self.textView!.text = totes
-        
-        
-        //self.becomeFirstResponder()
-        
-        /*
-        // disable hud (this replaces the default hud with a custom 0x0 view
-        self.volumeView = MPVolumeView(frame: CGRectMake(-1000,-1000,0,0) )
-        UIApplication.sharedApplication().windows.first?.addSubview(self.volumeView!)
-        listenVolumeButton()
-        */
-        
-        self.textViewDidChange(self.textView!)
+        textView!.text = totes
+        textViewDidChange(textView!)
         tts?.speak(message)
     }
 
@@ -553,7 +480,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         
         state = .SKSIdle
         
-        self.insertText(recognition.text)
+        insertText(recognition.text)
         
         toggleRecogButton?.setTitle("Dictate", forState: .Normal)
         toggleRecogButton?.enabled = true
@@ -581,7 +508,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         resetTransaction()
     }
     func transaction(transaction: SKTransaction!, didReceiveAudio audio: SKAudio!) {
-        self.skSession!.audioPlayer.playAudio(audio)
+        skSession!.audioPlayer.playAudio(audio)
     }
 
     

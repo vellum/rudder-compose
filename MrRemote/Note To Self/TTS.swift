@@ -2,6 +2,10 @@
 //  TTS.swift
 //  Note To Self
 //
+//  this is text to speech using speechkit (nuance)
+//  not using because playback has a slight delay
+//  it downloads rendered audio from a server
+//
 //  Created by David Lu on 5/15/16.
 //  Copyright © 2016 David Lu. All rights reserved.
 //
