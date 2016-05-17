@@ -102,6 +102,11 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         rgr.direction = .Right
         self.textView?.addGestureRecognizer(lgr)
         self.textView?.addGestureRecognizer(rgr)
+        
+        self.textView?.accessibilityTraits = (self.textView?.accessibilityTraits)! | UIAccessibilityTraitAllowsDirectInteraction
+        
+        //self.textView?.isAccessibilityElement = false
+        
         /*
         self.textView?.editable = false
         self.textView?.userInteractionEnabled = false
@@ -144,7 +149,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         }
         loadEarcons()
         
-        tts=TTS2()
+        tts = TTS2()
     }
     
     override func canBecomeFirstResponder() -> Bool {

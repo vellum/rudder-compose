@@ -8,6 +8,8 @@
 
 import Foundation
 import AVFoundation
+import UIKit
+
 
 class TTS2: NSObject {
     var synthesizer: AVSpeechSynthesizer?
@@ -17,6 +19,9 @@ class TTS2: NSObject {
     }
     
     func speak(text: String){
+        //UIAccessibilityPostNotification(UIAccessibilityPauseAssistiveTechnologyNotification, UIAcces)
+        
+        
         if (synthesizer!.speaking) {
             synthesizer!.stopSpeakingAtBoundary(.Immediate)
         }
