@@ -36,6 +36,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
 
     var textIndex: Int = 0
     var words = [String]()
+    var stringSelectedRange: NSRange? = nil
 
     // MARK:
     // MARK: speechkit
@@ -104,6 +105,9 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         //textView?.isAccessibilityElement = false
         view.addSubview(textView!)
         
+        if (!shouldAllowManualEdit){
+            textView?.editable = false
+        }
 
         // speechkit
         let mainbounds = UIScreen.mainScreen().bounds
@@ -269,11 +273,13 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     }
     
     func selectAll(){
+        let len = textView?.text.characters.count
+        selectStringRange(NSMakeRange(0, len!))
+        /*
         textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.beginningOfDocument)!, toPosition: (textView?.endOfDocument)!)
-        
+        */
         var message = textView!.text!
         message = message.stringByAppendingString("... selected")
-        
         tts?.speak(message)
     }
     
@@ -282,6 +288,17 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     }
     func selectNadaAtFirst(){
         textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.beginningOfDocument)!, toPosition: (textView?.beginningOfDocument)!)
+    }
+    
+    func selectStringRange(range:NSRange){
+        stringSelectedRange = range
+        print(stringSelectedRange)
+        return
+        
+        let pos0 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: range.location)
+        let pos1 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: range.location + range.length)
+        let tvrange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
+        selectRange(tvrange!)
     }
     
     func selectRange(range:UITextRange){
@@ -295,10 +312,11 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         }
         textView?.selectedTextRange = textView?.textRangeFromPosition((textView?.endOfDocument)!, toPosition: (textView?.endOfDocument)!)
         if (index < 0){
-            let pos0 = textView?.beginningOfDocument
-            let pos1 = pos0
-            let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
-            selectRange(r)
+            //let pos0 = textView?.beginningOfDocument
+            //let pos1 = pos0
+            //let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
+            //selectRange(r)
+            selectStringRange(NSMakeRange(0, 0))
             let word = "insertion point at beginning of document"
             tts?.speak(word)
             return
@@ -317,11 +335,13 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             let word = words[i]
             startInd += word.characters.count + 1 // + 1 to account for space
         }
-        let endInd = startInd + curLen
-        let pos0 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: startInd)
-        let pos1 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: endInd)
-        let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
-        selectRange(r)
+        //let endInd = startInd + curLen
+        //let pos0 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: startInd)
+        //let pos1 = textView?.positionFromPosition((textView?.beginningOfDocument)!, offset: endInd)
+        //let r:UITextRange = (textView?.textRangeFromPosition(pos0!, toPosition: pos1!))!
+        //selectRange(r)
+        selectStringRange(NSMakeRange(startInd, curLen))
+        
         if (ind == words.count-1){
             let word = "insertion point at end of document"
             tts?.speak(word)
@@ -333,7 +353,6 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     }
 
     func insertText(message:String) {
-        
         let selectedRange: NSRange = (textView?.selectedRange)!
         var msg = message
         msg = msg.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
@@ -341,6 +360,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             msg = ""
         }
         let text = textView?.text
+        
+        // FIXME: use string range instead of selected range
         let leftRange = text!.startIndex.advancedBy(0)..<(text?.startIndex.advancedBy(selectedRange.location))!
         let leftString = text!.substringWithRange(leftRange)
         var totes = ""
