@@ -17,7 +17,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
 
     // MARK:
     // MARK: DIY SELECTION
-    var shouldAllowManualEdit: Bool = true
+    var shouldAllowManualEdit: Bool = false
     
     // MARK:
     // MARK: volume rocker
@@ -38,6 +38,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     var words = [String]()
     var thetext: String = ""
     var stringSelectedRange: NSRange? = nil
+    var cursor: UIView? = nil
 
     // MARK:
     // MARK: speechkit
@@ -143,6 +144,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         loadEarcons()
         
         tts = TTS2()
+        updateCursor()
     }
     
     override func canBecomeFirstResponder() -> Bool {
@@ -254,10 +256,15 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     }
     
     func textViewDidChange(textView: UITextView) {
-        let attr = textView.attributedText
-        let text = attr.string
+        //let attr = textView.attributedText
+        //let text = attr.string
+        let text = thetext
         words = (text.componentsSeparatedByString(" "))
         textIndex = words.count
+        
+        if (!self.shouldAllowManualEdit){
+            textIndex = words.count-1
+        }
         
         // FIXME: need to test if this gets called after a word selection or after an attributed text reset
         
@@ -319,14 +326,63 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineSpacing = round(0.3 * 24)
             
-            let attributed: NSMutableAttributedString = NSMutableAttributedString(string: thetext, attributes: [
+            var t = thetext.stringByAppendingString("")
+            if (textIndex == words.count+1 && stringSelectedRange?.length == 0){
+                t = t.stringByAppendingString("|")
+                
+            }
+            let attributed: NSMutableAttributedString = NSMutableAttributedString(string: t, attributes: [
                 NSFontAttributeName: UIFont(name: "IowanOldStyle-Roman", size: 24)!,
                 NSParagraphStyleAttributeName: paragraphStyle
                 ])
             attributed.addAttributes([
                 NSBackgroundColorAttributeName: UIColor.lightGrayColor()
                 ], range: range)
+            
             textView?.attributedText = attributed
+            updateCursor()
+        }
+    }
+    
+    func updateCursor(){
+        
+        if (shouldAllowManualEdit){
+            if (cursor != nil){
+                cursor?.hidden = true
+            }
+        } else {
+            if (cursor != nil){
+                cursor?.hidden = false
+            } else {
+                cursor = UIView(frame: CGRectMake(0,0,1,24))
+                cursor?.backgroundColor = UIColor.blueColor()
+                textView?.addSubview(cursor!)
+            }
+        }
+        if (stringSelectedRange?.length==0){
+            var start: UITextPosition? = nil
+            var end: UITextPosition? = nil
+            if (thetext.characters.count < 1) {
+                start = (textView?.beginningOfDocument)!
+                end = (textView?.beginningOfDocument)!
+            } else if (textIndex<0) {
+                start = (textView?.beginningOfDocument)!
+                end = (textView?.beginningOfDocument)!
+            } else {
+                end = textView?.endOfDocument
+                start = textView?.positionFromPosition(end!, offset: -1)
+            }
+            let trange = textView?.textRangeFromPosition(start!, toPosition: end!)
+            let rect = textView?.firstRectForRange(trange!)
+            cursor?.frame = CGRectMake(
+                (rect?.maxX)!,
+                (rect?.origin.y)!,
+                CGFloat(1.0),
+                (rect?.size.height)!
+            )
+            cursor?.hidden = false
+        } else {
+            cursor?.hidden = true
         }
     }
     
@@ -391,7 +447,9 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         let leftString = text.substringWithRange(leftRange)
         var totes = ""
         totes = totes.stringByAppendingString(leftString)
-        totes = totes.stringByAppendingString(" ")
+        if (leftString.characters.count>0){
+            totes = totes.stringByAppendingString(" ")
+        }
         totes = totes.stringByAppendingString(msg)
         
         if (selectedRange.location + selectedRange.length < text.characters.count) {
