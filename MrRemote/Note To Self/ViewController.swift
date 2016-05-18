@@ -263,7 +263,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         textIndex = words.count
         
         if (!self.shouldAllowManualEdit){
-            textIndex = words.count-1
+            //textIndex = words.count-1
         }
         
         // FIXME: need to test if this gets called after a word selection or after an attributed text reset
