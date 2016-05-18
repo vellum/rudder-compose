@@ -31,7 +31,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     var minVolume: CGFloat = 0.00001
     var initialVolume: CGFloat = 0.0
     
-    // MARK:
+    // MARK:w
     // MARK: word selection
 
     var textIndex: Int = 0
@@ -61,6 +61,10 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        // FIXME: move this to another code block
+        stringSelectedRange = NSMakeRange(0, 0)
         
         // make my "silent" audio ambient
         // this lets audio from other apps continue in background
@@ -254,6 +258,11 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         let text = attr.string
         words = (text.componentsSeparatedByString(" "))
         textIndex = words.count
+        
+        // FIXME: need to test if this gets called after a word selection or after an attributed text reset
+        
+        //selectStringRange(NSMakeRange(thetext.characters.count-1, 0))
+
     }
     
     // MARK:
@@ -279,8 +288,13 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         print("selectall()")
         var message = ""
         message = message.stringByAppendingString((textView?.attributedText.string)!)
-        selectStringRange(NSMakeRange(0, message.characters.count))
-        message = message.stringByAppendingString("... selected")
+        if (message.characters.count>0){
+            selectStringRange(NSMakeRange(0, message.characters.count))
+            message = message.stringByAppendingString("... selected")
+        } else {
+            selectStringRange(NSMakeRange(0, 0))
+            message = message.stringByAppendingString("insertion point at beginning of document")
+        }
         tts?.speak(message)
     }
     
@@ -302,7 +316,17 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             let tvrange = textView?.textRangeFromPosition(pos0!, toPosition: pos1!)
             selectRange(tvrange!)
         } else {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = round(0.3 * 24)
             
+            let attributed: NSMutableAttributedString = NSMutableAttributedString(string: thetext, attributes: [
+                NSFontAttributeName: UIFont(name: "IowanOldStyle-Roman", size: 24)!,
+                NSParagraphStyleAttributeName: paragraphStyle
+                ])
+            attributed.addAttributes([
+                NSBackgroundColorAttributeName: UIColor.lightGrayColor()
+                ], range: range)
+            textView?.attributedText = attributed
         }
     }
     
@@ -367,6 +391,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         let leftString = text.substringWithRange(leftRange)
         var totes = ""
         totes = totes.stringByAppendingString(leftString)
+        totes = totes.stringByAppendingString(" ")
         totes = totes.stringByAppendingString(msg)
         
         if (selectedRange.location + selectedRange.length < text.characters.count) {
@@ -383,13 +408,26 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         totes = totes.stringByReplacingOccurrencesOfString(" ; ", withString: "; ")
         
         thetext = totes
-        let attributed: NSAttributedString = NSAttributedString(string: totes)
-        textView?.attributedText = attributed
-        //textView!.text = totes
         
-        self.selectStringRange(NSMakeRange(attributed.length-1, 0))
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = round(0.3 * 24)
+        
+        let attributed: NSMutableAttributedString = NSMutableAttributedString(string: totes, attributes: [
+            NSFontAttributeName: UIFont(name: "IowanOldStyle-Roman", size: 24)!,
+            NSParagraphStyleAttributeName: paragraphStyle
+            ])
+        
+        textView?.attributedText = attributed
+        selectStringRange(NSMakeRange(thetext.characters.count-1, 0))
+        
         textViewDidChange(textView!)
-        tts?.speak(message)
+        
+        var announcement = ""
+        announcement = announcement.stringByAppendingString(message)
+        announcement = announcement.stringByAppendingString(" ... insertion point at end of document")
+        
+        tts?.speak(announcement)
         
         
     }
