@@ -39,6 +39,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     var thetext: String = ""
     var stringSelectedRange: NSRange? = nil
     var cursor: UIView? = nil
+    var catchAll: UIView? = nil
 
     // MARK:
     // MARK: speechkit
@@ -67,16 +68,6 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         // FIXME: move this to another code block
         stringSelectedRange = NSMakeRange(0, 0)
         
-        // make my "silent" audio ambient
-        // this lets audio from other apps continue in background
-        // ~ disabling this because it results in weird play/pause behavior
-        /*
-        do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryAmbient)
-        } catch {
-            print("set avaudiosessioncategory failed")
-        }
-         */
         
         // register to get volume input by playing an audio sample
         testPlayer = loadSound("silence")
@@ -94,22 +85,52 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
 
         // set up a text view
         let b = UIScreen.mainScreen().bounds
-        let m:CGFloat = 18.0
+        let m:CGFloat = 0//18.0
         textView = UITextView(frame: CGRectMake(m, 0, b.size.width-m*2, b.size.height-60))
         textView?.delegate = self
         textView!.font = UIFont(name: "IowanOldStyle-Roman", size: 24)
         textView!.contentInset = UIEdgeInsetsMake(18,0,0,0);
         textView?.editable = true
         textView?.userInteractionEnabled = true
+
         let lgr =  UISwipeGestureRecognizer(target: self, action: #selector(selectPrev))
         let rgr = UISwipeGestureRecognizer(target: self, action: #selector(selectNext))
+        let tgr = UITapGestureRecognizer(target: self, action: #selector(toggleRecognition))
+        tgr.numberOfTapsRequired = 2
+        tgr.numberOfTouchesRequired = 2
+        
         lgr.direction = .Left
         rgr.direction = .Right
         textView?.addGestureRecognizer(lgr)
         textView?.addGestureRecognizer(rgr)
+        textView?.addGestureRecognizer(tgr)
         textView?.accessibilityTraits = (textView?.accessibilityTraits)! | UIAccessibilityTraitAllowsDirectInteraction
-        //textView?.isAccessibilityElement = false
         view.addSubview(textView!)
+        
+        let lgr2 =  UISwipeGestureRecognizer(target: self, action: #selector(selectPrev))
+        let rgr2 = UISwipeGestureRecognizer(target: self, action: #selector(selectNext))
+        let tgr2 = UITapGestureRecognizer(target: self, action: #selector(toggleRecognition))
+        tgr2.numberOfTapsRequired = 2
+        tgr2.numberOfTouchesRequired = 2
+        
+        lgr2.direction = .Left
+        rgr2.direction = .Right
+        catchAll = UIView(frame: b)//textView!.frame)
+        catchAll?.backgroundColor = UIColor.clearColor()
+        
+        catchAll?.addGestureRecognizer(lgr2)
+        catchAll?.addGestureRecognizer(rgr2)
+        catchAll?.addGestureRecognizer(tgr2)
+        view.addSubview(catchAll!)
+        catchAll?.hidden = true
+        catchAll?.userInteractionEnabled = false
+        catchAll?.accessibilityTraits = (catchAll?.accessibilityTraits)! | UIAccessibilityTraitAllowsDirectInteraction
+        catchAll?.isAccessibilityElement = false
+        textView?.isAccessibilityElement = true
+        
+        catchAll?.backgroundColor = UIColor.clearColor()
+        // UIColor.redColor()
+        //catchAll?.alpha = 0.5
         
         if (!shouldAllowManualEdit){
             textView?.editable = false
@@ -145,6 +166,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         
         tts = TTS2()
         updateCursor()
+        voiceOverStatusChanged()
     }
     
     override func canBecomeFirstResponder() -> Bool {
@@ -153,6 +175,7 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     
     override func viewWillAppear(animated: Bool) {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillShow), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillHide), name: UIKeyboardWillHideNotification, object: nil)
     }
 
     override func viewDidAppear(animated: Bool) {
@@ -160,6 +183,40 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         becomeFirstResponder()
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         textView?.becomeFirstResponder()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(voiceOverStatusChanged), name: UIAccessibilityVoiceOverStatusChanged, object: nil)
+    }
+    
+    func voiceOverStatusChanged() {
+        
+        // no voiceover
+        if (!UIAccessibilityIsVoiceOverRunning()) {
+            textView?.editable = true
+            textView?.becomeFirstResponder()
+            shouldAllowManualEdit = true
+            cursor?.hidden = true
+            
+            catchAll?.hidden = true
+            catchAll?.userInteractionEnabled = false
+            catchAll?.isAccessibilityElement = false
+            textView?.isAccessibilityElement = true
+            textView?.userInteractionEnabled = true
+            
+        // voiceover
+        } else {
+            textView?.editable = false
+            shouldAllowManualEdit = false
+            cursor?.hidden = false
+            
+            catchAll?.hidden = false
+            catchAll?.userInteractionEnabled = true
+            catchAll?.isAccessibilityElement = true
+            textView?.isAccessibilityElement = false
+            
+            textView?.userInteractionEnabled = false
+            keyboardWillHide()
+        }
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -177,9 +234,19 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         let keyboardRectangle = keyboardFrame.CGRectValue()
         let keyboardHeight = keyboardRectangle.height
         let mainbounds = UIScreen.mainScreen().bounds
-        let m:CGFloat = 18.0
+        let m:CGFloat = 0//18.0
         textView?.frame = CGRectMake(mainbounds.origin.x+m, mainbounds.origin.y, mainbounds.size.width-m*2, mainbounds.size.height - keyboardHeight-60)
         toggleRecogButton?.frame = CGRectMake(mainbounds.origin.x, mainbounds.size.height - keyboardHeight - 60, mainbounds.size.width, 60)
+    }
+    
+    func keyboardWillHide() {
+        // redo layout when keyboard is dismissed
+        let m:CGFloat = 0//18.0
+        let mainbounds = UIScreen.mainScreen().bounds
+        //textView?.frame = CGRectMake(mainbounds.origin.x+m, mainbounds.origin.y, mainbounds.size.width-m*2, mainbounds.size.height-60)
+        //toggleRecogButton?.frame = CGRectMake(mainbounds.origin.x, mainbounds.size.height - 60, mainbounds.size.width, 60)
+        textView?.frame = CGRectMake(mainbounds.origin.x+m, mainbounds.origin.y, mainbounds.size.width-m*2, mainbounds.size.height)
+        toggleRecogButton?.frame = CGRectMake(mainbounds.origin.x, mainbounds.size.height, mainbounds.size.width, 60)
     }
 
     // MARK:
@@ -256,24 +323,28 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     }
     
     func textViewDidChange(textView: UITextView) {
-        //let attr = textView.attributedText
-        //let text = attr.string
-        let text = thetext
+        
+        var text = textView.attributedText.string.stringByAppendingString(" ")
+        text = text.stringByReplacingOccurrencesOfString("  ", withString: " ")
+        
+        thetext = text
         words = (text.componentsSeparatedByString(" "))
         textIndex = words.count
         
-        if (!self.shouldAllowManualEdit){
-            //textIndex = words.count-1
-        }
-        
         // FIXME: need to test if this gets called after a word selection or after an attributed text reset
-        
-        //selectStringRange(NSMakeRange(thetext.characters.count-1, 0))
-
     }
     
     // MARK:
     // MARK: text selection by volume rocker
+    
+    func doubleCheckStrings(){
+        if (thetext.characters.count > textView?.attributedText.string.characters.count){
+        // append space to textview string
+            var space: NSAttributedString = NSAttributedString(string: " ")
+            
+            
+        }
+    }
     
     func selectPrev(){
         textIndex -= 1
@@ -325,6 +396,11 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
         } else {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineSpacing = round(0.3 * 24)
+            paragraphStyle.headIndent = 18
+            paragraphStyle.firstLineHeadIndent = 18
+            paragraphStyle.tailIndent = -18
+            
+
             
             var t = thetext.stringByAppendingString("")
             if (textIndex == words.count+1 && stringSelectedRange?.length == 0){
@@ -374,12 +450,24 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             }
             let trange = textView?.textRangeFromPosition(start!, toPosition: end!)
             let rect = textView?.firstRectForRange(trange!)
-            cursor?.frame = CGRectMake(
-                (rect?.maxX)!,
-                (rect?.origin.y)!,
-                CGFloat(1.0),
-                (rect?.size.height)!
-            )
+            
+            if (thetext.characters.count < 1) {
+                
+                cursor?.frame = CGRectMake(
+                    18,
+                    (rect?.origin.y)!,
+                    CGFloat(1.0),
+                    (rect?.size.height)!
+                )
+            } else {
+                cursor?.frame = CGRectMake(
+                    (rect?.maxX)!,
+                    (rect?.origin.y)!,
+                    CGFloat(1.0),
+                    (rect?.size.height)!
+                )
+                
+            }
             cursor?.hidden = false
         } else {
             cursor?.hidden = true
@@ -441,6 +529,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
             msg = ""
         }
         let text = thetext
+        
+        // FIXME: implement undo
         
         // FIXME: use string range instead of selected range
         let leftRange = text.startIndex.advancedBy(0)..<(text.startIndex.advancedBy(selectedRange.location))
@@ -552,7 +642,8 @@ class ViewController: UIViewController, AVAudioPlayerDelegate, UITextViewDelegat
     
     func recognize() {
         // Start listening to the user.
-        toggleRecogButton?.setTitle("Stop", forState: .Normal)
+        //toggleRecogButton?.setTitle("Stop", forState: .Normal)
+        toggleRecogButton?.setTitle("Listening", forState: .Normal)
         skTransaction = skSession!.recognizeWithType(recognitionType,
                                                      detection: endpointer,
                                                      language: language,
